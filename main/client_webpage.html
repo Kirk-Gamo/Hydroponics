@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connect Arduino to Webpage</title>
+
+    <!-- ADD: socket library -->
+    <!-- if this version will not work, refer sa video: https://www.youtube.com/watch?v=gQYsUjT-IBo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>Communicating Between Webpage and Arduino</h1>
+    <div id="sample"></div>
+
+    <!-- Receive message using the socket library -->
+    <script>
+      var socket = io();
+
+      // Listen for data event:
+      socket.on(
+        "data",
+
+        // when data event occurs, it will run the function below:
+        function (data) {
+          console.log(data);
+
+          // Display data in our webpage:
+          document.querySelector("#sample").innerHTML = data;
+        }
+      );
+    </script>
+  </body>
+</html>
