@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hydroponics Cyb</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="header">
+      <img src="logo.png" alt="" class="logo" />
+      <h1 class="logo-name">H Y D R O P O N I C S</h1>
+    </section>
+
+    <section class="wrapper">
+      <div class="info-section">
+        <!--
+          
+          Temperature
+        
+        -->
+        <div class="temperature content">
+          <h1>Temperature</h1>
+          <span class="value">
+            <p id="temperature">1&deg;</p>
+          </span>
+        </div>
+        <span class="temp-info info">
+          Current Temperature is not that bad!
+        </span>
+        <!--
+          
+          pH Level
+        
+        -->
+        <div class="ph-level content">
+          <h1>pH Level</h1>
+          <span class="value">
+            <p id="ph">2</p>
+          </span>
+        </div>
+        <span class="phLevel-info info">pH Level is not that bad!</span>
+        <!--
+          
+          TDS Value
+        
+        -->
+        <div class="tds-value content">
+          <h1>TDS Value</h1>
+          <span class="value">
+            <p id="tds">3</p>
+          </span>
+        </div>
+        <span class="tdsVal-info info">TDS Value is not that bad!</span>
+        <!--
+
+          Electric Conductivity
+        
+        -->
+        <div class="turpidity content">
+          <h1>Turpidity</h1>
+          <span class="value">
+            <p id="turpidity">4</p>
+          </span>
+        </div>
+        <span class="turpidity-info info"
+          >Turpidity is not that bad!</span
+        >
+      </div>
+    </section>
+    <script>
+      // Connect to the WebSocket channel for the browser
+      const socket = new WebSocket("<%= ip %>/browser");
+
+      socket.addEventListener("open", (event) => {
+          console.log("Connected to WebSocket channel for the browser");
+      });
+
+      document.querySelector('.disconnect').addEventListener('click', disconnectAll);
+
+      function disconnectAll() {
+          console.log('disconnecting all sensors...');
+          socket.send('disconnect-all');
+      }
+
+      socket.addEventListener("message", (msg) => {
+          const sensors = JSON.parse(msg["data"]);
+
+          sensors.forEach((sensor) => {
+              
+              console.clear();
+              // console.log(JSON.stringify(sensor));
+              console.log(`Sensor ${sensor.id}: ${sensor.timeout}`)
+
+              document.querySelector(
+                  "#temperature"
+              ).innerHTML = `${Math.round(sensor.temperature)}°`;
+
+              document.querySelector(
+                  "#ph"
+              ).innerHTML = `${Math.round(sensor.ph)}`;
+
+              document.querySelector(
+                  "#tds"
+              ).innerHTML = `${Math.round(sensor.tds)}`;
+
+              document.querySelector(
+                  "#turpidity"
+              ).innerHTML = `${Math.round(sensor.turpidity)}`;
+              // document.querySelector('#stat-gascontent').innerHTML = `${Math.round(sensor.gasConcentration)}`;
+          });
+      });
+
+      socket.addEventListener("close", (event) => {});
+  </script>
+  </body>
+</html>
